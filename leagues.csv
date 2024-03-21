@@ -1,0 +1,5 @@
+id,name,country_id,is_cup
+271,Superliga,320,False
+501,Premiership,1161,False
+513,Premiership Play-Offs,1161,False
+1659,Superliga Play-offs,320,False
