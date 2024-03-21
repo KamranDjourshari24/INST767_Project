@@ -2,10 +2,11 @@ import requests
 import pandas as pd
 
 
-url = (f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symb'
-       'ol=IBM&interval=5min&apikey=demo')
+url = (f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol'
+       '=MSFT&interval=30min&apikey=VYT21S4Y45H54ELK')
 r = requests.get(url)
-data = r.json()["Time Series (5min)"]
+data = r.json()["Time Series (30min)"]
 df = pd.DataFrame.from_dict(data, orient='index')
 
-print(df)
+df.to_csv("StockApi.csv", header=True,index=True)
+
