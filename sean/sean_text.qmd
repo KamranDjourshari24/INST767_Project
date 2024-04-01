@@ -1,0 +1,188 @@
+---
+title: "leagues"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+api_key <- "IY2zQLGYGGThIjhQ3WGpb8Eokhm17stNi9MgjRPAg1130elt2Hp1BcjWCpe8"
+url <- "https://api.sportmonks.com/v3/football/leagues"
+
+get_data <- function(url) {
+  headers <- c(
+    "Authorization" = api_key,
+    "Accept" = "application/json"
+  )
+
+  response <- httr::GET(url, httr::add_headers(.headers = headers))
+
+  if (httr::status_code(response) == 200) {
+    response_data <- httr::content(response, "parsed")
+    if (!is.null(response_data$data) && length(response_data$data) > 0) {
+      data <- do.call(rbind, lapply(response_data$data, as.data.frame))
+      df <- as.data.frame(data)
+    return(df) } else {
+    error_message <- httr::content(response, "text")
+    print(paste0("Failed to fetch data: ", httr::status_code(response), " - ", error_message))
+    return(NULL)
+  }}
+}
+
+# Replace 'your_api_key_here' with your actual Sportmonks API key
+#api_key <- "mfou7aOZmxw5Y0DBa772xTs0rkIreQ8Y1zt7oWD9Gnu9uPT4ZUW0NXkBlBXy"
+
+
+# Example usage: fetching players data
+players_url <- "https://api.sportmonks.com/v3/football/players"
+players_data <- get_data(players_url)
+```
+
+```{r}
+
+library(httr)
+
+url <- "https://api.sportmonks.com/v3/football/players"
+
+get_data <- function(url) {
+  headers <- c(
+    "Authorization" = api_key,
+    "Accept" = "application/json"
+  )
+
+  response <- httr::GET(url, httr::add_headers(.headers = headers))
+
+  if (httr::status_code(response) == 200) {
+    return(httr::content(response, "parsed"))
+  } else {
+    error_message <- httr::content(response, "text")
+    print(paste0("Failed to fetch data: ", httr::status_code(response), " - ", error_message))
+    return(NULL)
+  }
+}
+
+
+
+write_players_to_csv <- function(players_data, filename) {
+  players <- players_data$data
+
+  if (!is.null(players)) {
+    fieldnames <- c("id", "name", "country_id", "is_cup")
+    players_df <- players %>%
+      as.data.frame() %>%
+      select(all_of(fieldnames))
+
+    write.csv(players_df, file = filename, row.names = FALSE)
+  } else {
+    print("No players data to write.")
+  }
+}
+
+# Replace 'your_api_key_here' with your actual Sportmonks API key
+api_key <- "your_api_key_here"
+
+players_data <- get_players(api_key)
+
+if (!is.null(players_data)) {
+  write_players_to_csv(players_data, "players.csv")
+  print("Players data has been written to players.csv")
+}
+```
+
+```{python}
+import requests
+import csv
+
+def get_leagues(api_key):
+    url = "https://api.sportmonks.com/v3/football/leagues?api_token="+api_key
+    #headers = {
+     #   "Accept": "application/json",
+    #}
+    #params = {
+    #    "api_token": api_key,
+    #}
+    #response = requests.get(url, headers=headers, params=params)
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Failed to fetch data: {response.status_code}")
+        return None
+
+def write_leagues_to_csv(leagues_data, filename):
+    # Assuming leagues_data['data'] is the list of leagues
+    leagues = leagues_data.get('data', [])
+    if leagues:
+        # Define the CSV column names (adjust these based on the actual data structure)
+        fieldnames = ['id', 'name', 'country_id', 'is_cup']
+        
+        with open(filename, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            for league in leagues:
+                # Adjust the row dict if the structure of league objects is different
+                row = {fieldname: league.get(fieldname, '') for fieldname in fieldnames}
+                writer.writerow(row)
+    else:
+        print("No leagues data to write.")
+
+# Replace 'your_api_key_here' with your actual Sportmonks API key
+api_key = "mfou7aOZmxw5Y0DBa772xTs0rkIreQ8Y1zt7oWD9Gnu9uPT4ZUW0NXkBlBXy"
+leagues_data = get_leagues(api_key)
+if leagues_data:
+    write_leagues_to_csv(leagues_data, 'leagues.csv')
+    print("Leagues data has been written to leagues.csv")
+
+
+```
+
+```{python}
+import requests
+import csv
+
+def get_leagues(api_key):
+    url = "https://api.sportmonks.com/v3/football/players"
+    headers = {
+        #"Authorization": f"Bearer {api_key}",
+        "Authorization": f"{api_key}",
+        "Accept": "application/json"
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        try:
+            error_message = response.json()["error"]
+        except (KeyError, ValueError):
+            error_message = response.text
+        print(f"Failed to fetch data: {response.status_code} - {error_message}")
+        return None
+
+def write_leagues_to_csv(leagues_data, filename):
+    leagues = leagues_data.get('data', [])
+
+    if leagues:
+        fieldnames = ['id', 'name', 'country_id', 'is_cup']
+        with open(filename, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            for league in leagues:
+                row = {fieldname: league.get(fieldname, '') for fieldname in fieldnames}
+                writer.writerow(row)
+    else:
+        print("No leagues data to write.")
+
+# Replace 'your_api_key_here' with your actual Sportmonks API key
+api_key = "bcpUN3aZz0hRfclc90kS4DVBRCe9G83mwr2juyYBwduPOHa5WaBXjA0TBd1H"
+
+leagues_data = get_leagues(api_key)
+
+if leagues_data:
+    write_leagues_to_csv(leagues_data, 'players.csv')
+    print("Leagues data has been written to leagues.csv")
+```
