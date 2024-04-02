@@ -6,19 +6,326 @@ editor: visual
 
 ```{r}
 library(tidyverse)
+library(httr)
+library(jsonlite)
+```
+```{r}
+library(tidyverse)
+library(httr)
+library(jsonlite)
+
+fetch_data <- function(base_url, headers, pagination_key = "pagination", only_first_page = FALSE) {
+  data <- list()
+  url <- base_url
+  
+  while (!is.null(url)) {
+    response <- GET(url, add_headers(.headers = headers))
+    
+    if (http_status(response)$category == "Success") {
+      response_data <- content(response, "parsed")
+      data <- c(data, response_data$data)
+      
+      # Check if there are more pages
+      if (exists(pagination_key, response_data) && response_data[[pagination_key]]$has_more) {
+        if (only_first_page) {
+          # Return only the first page
+          break
+        } else {
+          url <- response_data[[pagination_key]]$next_page
+        }
+      } else {
+        url <- NULL
+      }
+    } else {
+      # Handle error
+      print(paste("Error:", http_status(response)$reason))
+      break
+    }
+  }
+  
+  # Convert to JSON and then to data frame
+  data_json <- toJSON(data, auto_unbox = TRUE)
+  data_df <- as.data.frame(fromJSON(data_json)) %>%
+    mutate_all(as.character)
+  
+  return(data_df)
+}
+
+api_key <- "ZsmqzVHh2cx0AcBaTlnKuV4Wh3XuYSlyYuh6yEDLULKpPa42fnbggIIubhNL"
+headers <- c("Authorization" = api_key, "Accept" = "application/json")
+
+# Fetch all seasons
+#all_seasons <- fetch_data(base_url, headers)
+```
+## NO USE
+```{r}
+library(tidyverse)
+library(httr)
+library(jsonlite)
+
+fetch_data <- function(base_url, api_key, pagination_key = "pagination", only_first_page = FALSE) {
+  data <- list()
+  url <- paste0(base_url, "?api_token=", api_key)
+  headers <- c("Accept" = "application/json")
+
+  while (!is.null(url)) {
+    response <- GET(url, add_headers(.headers = headers))
+
+    if (http_status(response)$category == "Success") {
+      response_data <- content(response, "parsed")
+      data <- c(data, response_data$data)
+
+      # Check if there are more pages
+      if (exists(pagination_key, response_data) && response_data[[pagination_key]]$has_more) {
+        if (only_first_page) {
+          # Return only the first page
+          break
+        } else {
+          url <- paste0(response_data[[pagination_key]]$next_page, "&api_token=", api_key)
+        }
+      } else {
+        url <- NULL
+      }
+    } else {
+      # Handle error
+      print(paste("Error:", http_status(response)$reason))
+      break
+    }
+  }
+
+  # Convert to JSON and then to data frame
+  data_json <- toJSON(data, auto_unbox = TRUE)
+  data_df <- as.data.frame(fromJSON(data_json))
+  return(data_df)
+}
+
+
+```
+## END NO USE
+
+```{r}
+# Get leagues, filter for PL = 8
+# Get seasons, filter for current season = 23/24
+# Get teams, filter for current season = 23/24 and include players, explode into long table
+# For Player ID in list of players from teams, get country
 ```
 
 ```{r}
-api_key <- "IY2zQLGYGGThIjhQ3WGpb8Eokhm17stNi9MgjRPAg1130elt2Hp1BcjWCpe8"
-url <- "https://api.sportmonks.com/v3/football/leagues"
+##
+# Leagues
+##
+base_url <- "https://api.sportmonks.com/v3/football/leagues"
+all_leagues <- fetch_data(base_url, headers, only_first_page = FALSE)
+# PL id = 8
 
-get_data <- function(url) {
-  headers <- c(
+base_url <- "https://api.sportmonks.com/v3/football/leagues?include=name&filters=id:8"
+
+
+```
+
+```{r}
+##
+# Seasons
+##
+# Define API endpoint and authentication
+base_url <- "https://api.sportmonks.com/v3/football/seasons"
+#api_key <- "ZsmqzVHh2cx0AcBaTlnKuV4Wh3XuYSlyYuh6yEDLULKpPa42fnbggIIubhNL"
+
+#test_seasons <- fetch_data(base_url, headers, only_first_page = TRUE)
+all_seasons <- fetch_data(base_url, headers, pagination_key = "pagination", only_first_page = FALSE)
+# PL current season id = 21646
+
+
+```
+
+```{r}
+##
+# Teams and Players
+##
+base_url <- "https://api.sportmonks.com/v3/football/teams/seasons/21646?include=players"
+current_pl_teams_w_players <- fetch_data(base_url, headers, only_first_page = FALSE)
+#all_teams <- fetch_data(base_url, headers, only_first_page = FALSE)
+
+#base_url <- "https://api.sportmonks.com/v3/football/teams/53?include=players"
+
+```
+
+```{r}
+##
+# Base URL 741444
+##
+base_url <- "https://api.sportmonks.com/v3/football/teams/seasons/21646?include=players"
+```
+
+```{r}
+##
+# Squads
+##
+
+base_url <- 'https://api.sportmonks.com/v3/football/squads/seasons/21646/teams/8' 
+#test_seasons <- fetch_data(base_url, headers, only_first_page = TRUE)
+liverpool_squad <- fetch_data(base_url, headers, only_first_page = TRUE)
+#https://api.sportmonks.com/v3/football/squads/seasons/{seasonID}/teams/{teamID}
+```
+
+```{r}
+##
+# Countries
+##
+# Define API endpoint and authentication
+base_url <- "https://api.sportmonks.com/v3/core/countries"
+#test_seasons <- fetch_data(base_url, headers, only_first_page = TRUE)
+all_countries <- fetch_data(base_url, headers, only_first_page = FALSE)
+```
+
+
+```{r}
+
+##
+# Players
+##
+base_url <- "https://api.sportmonks.com/v3/football/players"
+test_players <- fetch_data(base_url, headers, only_first_page = TRUE)
+
+```
+
+
+
+```{r}
+##
+# States
+##
+base_url <- "https://api.sportmonks.com/v3/football/states"
+#test_teams <- fetch_data(base_url, headers, only_first_page = TRUE)
+all_states <- fetch_data(base_url, headers, only_first_page = FALSE)
+```
+
+```{r}
+##
+# Types
+##
+base_url <- "https://api.sportmonks.com/v3/core/types"
+#test_teams <- fetch_data(base_url, headers, only_first_page = TRUE)
+all_types <- fetch_data(base_url, headers, only_first_page = FALSE)
+```
+
+```{r}
+
+base_url <- "https://api.sportmonks.com/v3/my/filters/entity"
+all_entity <- fetch_data(base_url, headers, only_first_page = FALSE)
+
+
+```
+
+
+```{r}
+# Install required packages
+#install.packages(c("httr", "jsonlite"))
+library(httr)
+library(jsonlite)
+
+# Define API endpoint and authentication
+base_url <- "https://api.sportmonks.com/v3/football/seasons"
+#api_token <- "ZsmqzVHh2cx0AcBaTlnKuV4Wh3XuYSlyYuh6yEDLULKpPa42fnbggIIubhNL"
+# Install required packages
+api_key <- "ZsmqzVHh2cx0AcBaTlnKuV4Wh3XuYSlyYuh6yEDLULKpPa42fnbggIIubhNL"
+
+headers <- c(
     "Authorization" = api_key,
     "Accept" = "application/json"
   )
 
-  response <- httr::GET(url, httr::add_headers(.headers = headers))
+# Function to fetch seasons data with pagination
+fetch_seasons <- function() {
+  
+  
+  data <- list()
+  #url <- modify_url(base_url, query = list(api_token = api_token))
+  
+  while (!is.null(url)) {
+    response <- httr::GET(url,httr::add_headers(.headers = headers))
+    
+    if (http_status(response)$category == "Success") {
+      response_data <- content(response, "parsed")
+      data <- c(data, response_data$data)
+      
+      # Check if there are more pages
+      if (response_data$pagination$has_more) {
+        url <- response_data$pagination$next_page
+      } else {
+        url <- NULL
+      }
+    } else {
+      # Handle error
+      print(paste("Error:", http_status(response)$reason))
+      break
+    }
+  }
+  
+  data <- data %>%
+    toJSON() %>%
+    fromJSON()
+  
+  return(data)
+}
+
+# Fetch all seasons
+all_seasons <- fetch_seasons()
+
+xall_seasons <- all_seasons %>% toJSON() %>% fromJSON() 
+
+```
+
+```{r}
+# get league https://docs.sportmonks.com/football/endpoints-and-entities/endpoints/leagues/get-all-leagues
+# get teams https://docs.sportmonks.com/football/endpoints-and-entities/endpoints/teams
+# get squads https://docs.sportmonks.com/football/endpoints-and-entities/endpoints/team-squads
+# get players https://docs.sportmonks.com/football/endpoints-and-entities/endpoints/players
+
+###
+# Vars
+###
+url_base <- "https://api.sportmonks.com/v3/football"
+api_key <- "ZsmqzVHh2cx0AcBaTlnKuV4Wh3XuYSlyYuh6yEDLULKpPa42fnbggIIubhNL"
+headers <- c(
+    "Authorization" = api_key,
+    "Accept" = "application/json"
+  )
+
+###
+# Get premiere league current season
+###
+seasons_url <- paste0(url_base,"/seasons&sortBy=")
+https://api.sportmonks.com/v3/football/fixtures&sortBy=starting_at&order=desc
+
+
+response <- httr::GET(seasons_url, httr::add_headers(.headers = headers)) %>% content("parsed")
+response <- response$data %>% toJSON() %>% fromJSON() 
+###
+# Get premiere league 
+###
+
+leagues_url <- paste0(url_base,"/leagues")
+
+
+response <- httr::GET(leagues_url, httr::add_headers(.headers = headers)) %>% content("parsed")
+response <- response$data %>% toJSON() %>% fromJSON() %>% 
+  filter(str_detect(tolower(name),"premier")) %>%
+  filter(country_id == "462") %>%
+  select(id) %>%
+  pull(id) %>%
+  unlist()
+
+###
+# Get premiere league teams
+###
+
+
+teams_url <- paste0(url_base,"/teams","/462")
+
+response <- httr::GET(teams_url, httr::add_headers(.headers = headers)) %>% content("parsed")
+response <- response$data %>% toJSON() %>% fromJSON() 
+
 
   if (httr::status_code(response) == 200) {
     response_data <- httr::content(response, "parsed")
