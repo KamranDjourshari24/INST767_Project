@@ -8,13 +8,20 @@ editor: visual
 library(tidyverse)
 library(httr)
 library(jsonlite)
+library(janitor)
 ```
-```{r}
-library(tidyverse)
-library(httr)
-library(jsonlite)
 
-fetch_data <- function(base_url, headers, pagination_key = "pagination", only_first_page = FALSE) {
+```{r}
+#library(tidyverse)
+#library(httr)
+#library(jsonlite)
+
+base_url <- "https://api.sportmonks.com/v3/football/teams/seasons/21646?include=players.player"
+api_key <- "ZsmqzVHh2cx0AcBaTlnKuV4Wh3XuYSlyYuh6yEDLULKpPa42fnbggIIubhNL"
+headers <- c("Authorization" = api_key, "Accept" = "application/json")
+
+fetch_data <- function(base_url, headers, pagination_key = "pagination", only_first_page = FALSE,is_team_players=FALSE) {
+  
   data <- list()
   url <- base_url
   
@@ -45,18 +52,114 @@ fetch_data <- function(base_url, headers, pagination_key = "pagination", only_fi
   
   # Convert to JSON and then to data frame
   data_json <- toJSON(data, auto_unbox = TRUE)
-  data_df <- as.data.frame(fromJSON(data_json)) %>%
-    mutate_all(as.character)
+  data_df <- fromJSON(data_json)
   
-  return(data_df)
+  if (is_team_players == TRUE) {
+    pl_players <- tibble()
+    #team_index_id <- 14
+    for (team_index_id in c(1:nrow(data_df))) {
+      print(paste("Index number:", team_index_id))
+      if(team_index_id == 1) {
+        
+      } else {
+        
+      #print(team_index_id)
+
+      team_df <- data_df %>%
+        slice(team_index_id)
+                  print("in function")
+
+      players_df <- team_df$players[[1]]
+
+      team_id <- players_df %>%
+        select(team_id) %>%
+        distinct(team_id) %>%
+        pull(team_id)
+    
+      player_df <- getElement(players_df,"player") 
+      
+      player_df <- player_df %>%
+        select(country_id) %>%
+        mutate(team_id = team_id) %>%
+        select(team_id,country_id) %>%
+        mutate(country_id = as.character(country_id),
+               team_id = as.character(team_id))
+#        mutate(across(where(everything), as.character))
+      #  mutate(across(where(is.list), as.character))
+      
+      pl_players <- pl_players %>%
+        bind_rows(player_df)
+
+        
+      }
+      
+    }
+    return(pl_players)
+  } else {
+   return(data_df) 
+  }
+  
+  #ata_df <- as.data.frame(fromJSON(data_json)) %>%
+  #  mutate_all(as.character)
+  
+
 }
 
+base_url <- "https://api.sportmonks.com/v3/football/teams/seasons/21646?include=players.player"
 api_key <- "ZsmqzVHh2cx0AcBaTlnKuV4Wh3XuYSlyYuh6yEDLULKpPa42fnbggIIubhNL"
 headers <- c("Authorization" = api_key, "Accept" = "application/json")
+current_pl_teams_w_players <- fetch_data(base_url, headers, only_first_page = FALSE, is_team_players = TRUE) 
+
+##
+# Countries
+##
+# Define API endpoint and authentication
+base_url <- "https://api.sportmonks.com/v3/core/countries"
+#test_seasons <- fetch_data(base_url, headers, only_first_page = TRUE)
+all_countries <- fetch_data(base_url, headers, only_first_page = FALSE, is_team_players = FALSE)
+x <- all_countries %>%
+  select(country_id = id, country_name = name, iso3) %>%
+  mutate(country_id = as.character(country_id))
+
+current_pl_teams_w_players_country <- current_pl_teams_w_players %>%
+  left_join(x)
+
+summary_pl_teams <- current_pl_teams_w_players_country %>%
+  group_by(country_name, iso3) %>%
+  count(sort=T) %>%
+  ungroup() %>%
+  mutate(pl_players_pct = round(n/sum(n)*100,2)) %>%
+  rename(pl_players_count = n) %>%
+  rename(country_code = iso3) %>%
+  mutate(country_code = as.character(country_code))
+
+base_url <- "https://api.openf1.org/v1/drivers?session_key=7763"
+fetch_f1 <- function(base_url) {
+  
+    response <- GET(base_url)
+    response_data <- content(response, "parsed")
+    
+    # Convert to JSON and then to data frame
+    data_json <- toJSON(response_data, auto_unbox = TRUE)
+    data_df <- fromJSON(data_json)
+    
+    return(data_df)
+}
+f1_driver <- fetch_f1(base_url) %>%
+  group_by(country_code) %>%
+  count(name="f1_driver_count", sort=TRUE) %>%
+  ungroup() %>%
+  mutate(f1_driver_pct = round(f1_driver_count/sum(f1_driver_count)*100,2))
+
+compare <- summary_pl_teams %>%
+  left_join(f1_driver)
+
 
 # Fetch all seasons
 #all_seasons <- fetch_data(base_url, headers)
 ```
+
+
 ## NO USE
 ```{r}
 library(tidyverse)
@@ -143,7 +246,16 @@ all_seasons <- fetch_data(base_url, headers, pagination_key = "pagination", only
 # Teams and Players
 ##
 base_url <- "https://api.sportmonks.com/v3/football/teams/seasons/21646?include=players"
-current_pl_teams_w_players <- fetch_data(base_url, headers, only_first_page = FALSE)
+current_pl_teams_w_players <- fetch_data(base_url, headers, only_first_page = FALSE) 
+
+library(tidyverse)
+library(purrr)
+
+#
+# The data_frames column should now have tibbles/dataframes with consistent structure
+
+
+
 #all_teams <- fetch_data(base_url, headers, only_first_page = FALSE)
 
 #base_url <- "https://api.sportmonks.com/v3/football/teams/53?include=players"
