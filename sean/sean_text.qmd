@@ -16,9 +16,10 @@ library(janitor)
 #library(httr)
 #library(jsonlite)
 
-base_url <- "https://api.sportmonks.com/v3/football/teams/seasons/21646?include=players.player"
 api_key <- "ZsmqzVHh2cx0AcBaTlnKuV4Wh3XuYSlyYuh6yEDLULKpPa42fnbggIIubhNL"
 headers <- c("Authorization" = api_key, "Accept" = "application/json")
+
+soccer_base_url <- "https://api.sportmonks.com/v3/football/teams/seasons/21646?include=players.player"
 
 fetch_data <- function(base_url, headers, pagination_key = "pagination", only_first_page = FALSE,is_team_players=FALSE) {
   
@@ -105,10 +106,7 @@ fetch_data <- function(base_url, headers, pagination_key = "pagination", only_fi
 
 }
 
-base_url <- "https://api.sportmonks.com/v3/football/teams/seasons/21646?include=players.player"
-api_key <- "ZsmqzVHh2cx0AcBaTlnKuV4Wh3XuYSlyYuh6yEDLULKpPa42fnbggIIubhNL"
-headers <- c("Authorization" = api_key, "Accept" = "application/json")
-current_pl_teams_w_players <- fetch_data(base_url, headers, only_first_page = FALSE, is_team_players = TRUE) 
+current_pl_teams_w_players <- fetch_data(soccer_base_url, headers, only_first_page = FALSE, is_team_players = TRUE) 
 
 ##
 # Countries
@@ -116,8 +114,7 @@ current_pl_teams_w_players <- fetch_data(base_url, headers, only_first_page = FA
 # Define API endpoint and authentication
 base_url <- "https://api.sportmonks.com/v3/core/countries"
 #test_seasons <- fetch_data(base_url, headers, only_first_page = TRUE)
-all_countries <- fetch_data(base_url, headers, only_first_page = FALSE, is_team_players = FALSE)
-x <- all_countries %>%
+all_countries <- fetch_data(base_url, headers, only_first_page = FALSE, is_team_players = FALSE) %>%
   select(country_id = id, country_name = name, iso3) %>%
   mutate(country_id = as.character(country_id))
 
@@ -133,7 +130,7 @@ summary_pl_teams <- current_pl_teams_w_players_country %>%
   rename(country_code = iso3) %>%
   mutate(country_code = as.character(country_code))
 
-base_url <- "https://api.openf1.org/v1/drivers?session_key=7763"
+f1_base_url <- "https://api.openf1.org/v1/drivers?session_key=7763"
 fetch_f1 <- function(base_url) {
   
     response <- GET(base_url)
@@ -145,7 +142,8 @@ fetch_f1 <- function(base_url) {
     
     return(data_df)
 }
-f1_driver <- fetch_f1(base_url) %>%
+
+f1_driver <- fetch_f1(f1_base_url) %>%
   group_by(country_code) %>%
   count(name="f1_driver_count", sort=TRUE) %>%
   ungroup() %>%
