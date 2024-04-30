@@ -98,6 +98,7 @@ def fetch_epl_players_data(Request):
     # Upload
     blob.upload_from_string(csv_epl_players_data, content_type='text/csv')
     
+    
     return 'CSV file written to bucket.'
     
     
