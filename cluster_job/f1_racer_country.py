@@ -6,12 +6,10 @@ spark = SparkSession.builder.appName("f1_racer_country").getOrCreate()
 spark = SparkSession.builder.getOrCreate()
 
 # Read in the CSV files as Spark DataFrames
-country_df = spark.read.csv("gs://countries_code_data/countries_code_data_"
-                            "2024-04-30 16:35:36.535473.csv", header=True, 
-                            inferSchema=True)
-driver_df = spark.read.csv("gs://f1_driver_data/f1_driver_data_2024-04-30"
-                           " 15:06:28.721922.csv", header=True, 
-                           inferSchema=True)
+country_df = spark.read.csv("gs://countries_code_data/countries_code_data.csv", 
+                            header=True, inferSchema=True)
+driver_df = spark.read.csv("gs://f1_driver_data/f1_driver_data.csv", 
+                           header=True, inferSchema=True)
 
 # Clean data by converting NED to NLD for correct joining
 driver_df = driver_df.withColumn("country_code", expr("CASE WHEN country_code "
@@ -51,7 +49,7 @@ joined_df.show()
 joined_df.write.format('bigquery') \
     .option('writeMethod', 'direct') \
     .option('table', 'inst767-419822.finalproject.racerf1_country') \
-    .option('temporaryGcsBucket', 'epl-temp') \
+    .option('temporaryGcsBucket', '767-temp') \
     .mode('overwrite') \
     .save()
 

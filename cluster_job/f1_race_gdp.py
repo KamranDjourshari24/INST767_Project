@@ -5,12 +5,10 @@ from pyspark.sql.functions import col, to_date, substring, concat, lit
 spark = SparkSession.builder.appName("f1_race").getOrCreate()
 
 # Read in the CSV files as Spark DataFrames
-race_df = spark.read.csv("gs://f1_race_info/F1_race_"
-                         "2024-05-02 18:37:43.479007.csv", header=True)
-gdp_df = spark.read.csv("gs://gdp_bank/gdp_data_2024-05-02 22:17:44.088919.csv", 
-                        header=True)
-country_df = spark.read.csv("gs://countries_code_data/countries_code_data_"
-                            "2024-04-30 16:35:36.535473.csv", header=True)
+race_df = spark.read.csv("gs://f1_race_info/F1_race.csv", header=True)
+gdp_df = spark.read.csv("gs://gdp_bank/gdp_data.csv", header=True)
+country_df = spark.read.csv("gs://countries_code_data/countries_code_data.csv", 
+                            header=True)
 
 # Cleaning data so the joins can be done with country name 
 race_df = race_df.withColumn("Country",
@@ -50,7 +48,7 @@ race_country_df.show()
 race_country_df.write.format('bigquery') \
     .option('writeMethod', 'direct') \
     .option('table', 'inst767-419822.finalproject.f1_race') \
-    .option('temporaryGcsBucket', 'epl-temp') \
+    .option('temporaryGcsBucket', '767-temp') \
     .mode('overwrite') \
     .save()
 

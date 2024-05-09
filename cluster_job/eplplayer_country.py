@@ -5,12 +5,10 @@ from pyspark.sql.functions import substring, col, to_date
 spark = SparkSession.builder.appName("epl_players").getOrCreate()
 country_df = spark.read.format("csv") \
                   .option("header", "true") \
-                  .load("gs://countries_code_data/countries_code_data_"
-                        "2024-04-30 16:35:36.535473.csv")
+                  .load("gs://countries_code_data/countries_code_data.csv")
 epl_df = spark.read.format("csv") \
               .option("header", "true") \
-              .load("gs://epl_players_data/epl_players_"
-                    "data_2024-04-30 14:25:17.543472.csv")
+              .load("gs://epl_players_data/epl_players.csv")
 
 joined_df = country_df.join(epl_df, country_df.id == epl_df.country_id, "left")
 
@@ -42,7 +40,7 @@ joined_df.show()
 joined_df.write.format('bigquery') \
     .option('writeMethod', 'direct') \
     .option('table', 'inst767-419822.finalproject.epl_country') \
-    .option('temporaryGcsBucket', 'epl-temp') \
+    .option('temporaryGcsBucket', '767-temp') \
     .mode('overwrite') \
     .save()
 

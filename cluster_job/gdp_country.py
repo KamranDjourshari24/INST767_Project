@@ -6,11 +6,10 @@ spark = SparkSession.builder.appName("gdp_country").getOrCreate()
 spark = SparkSession.builder.getOrCreate()
 
 # Read in datasets as PySpark Dataframes
-country_df = spark.read.csv("gs://countries_code_data/countries_code_data_"
-                            "2024-04-30 16:35:36.535473.csv", header=True, 
-                            inferSchema=True)
-gdp_df = spark.read.csv("gs://gdp_bank/gdp_data_2024-05-02 22:17:44.088919.csv",
-                        header=True, inferSchema=True)
+country_df = spark.read.csv("gs://countries_code_data/countries_code_data.csv", 
+                            header=True, inferSchema=True)
+gdp_df = spark.read.csv("gs://gdp_bank/gdp_data.csv", header=True, 
+                        inferSchema=True)
 
 # Join the two dataframes together
 joined_df = country_df.join(gdp_df, country_df.iso3 == gdp_df.Country_code
@@ -33,7 +32,7 @@ joined_df.show()
 joined_df.write.format('bigquery') \
     .option('writeMethod', 'direct') \
     .option('table', 'inst767-419822.finalproject.gdp_country') \
-    .option('temporaryGcsBucket', 'epl-temp') \
+    .option('temporaryGcsBucket', '767-temp') \
     .mode('overwrite') \
     .save()
 
