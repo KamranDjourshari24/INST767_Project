@@ -1,10 +1,13 @@
 import requests
 import pandas as pd
 from google.cloud import storage
+import datetime
 
 def main(request):
     race_list = []
-    years = range(2005, 2023)
+    now = datetime.datetime.now()
+    current_year = now.year
+    years = range(2005, current_year+1)
 
     for year in years:
         url = f"http://ergast.com/api/f1/{year}.json"
