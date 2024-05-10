@@ -28,4 +28,10 @@ GROUP BY Country
 ORDER BY Country;
 
 
+### Another way to look at the races happened in each country over the years (in a tabular format).
+SELECT Country, Year, COUNT(*) AS Race_count
+FROM `finalproject.f1_race`
+GROUP BY country, year
+ORDER BY country
+
 
