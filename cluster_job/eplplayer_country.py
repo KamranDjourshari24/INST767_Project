@@ -8,7 +8,7 @@ country_df = spark.read.format("csv") \
                   .load("gs://countries_code_data/countries_code_data.csv")
 epl_df = spark.read.format("csv") \
               .option("header", "true") \
-              .load("gs://epl_players_data/epl_players.csv")
+              .load("gs://epl_players_data/epl_players_data.csv")
 
 joined_df = country_df.join(epl_df, country_df.id == epl_df.country_id, "left")
 
