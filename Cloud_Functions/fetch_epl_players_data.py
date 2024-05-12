@@ -3,6 +3,7 @@
 ####################
 
 import requests
+from pandas import json_normalize
 import pandas as pd
 from google.cloud import storage
 import csv
@@ -31,9 +32,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 ###
 
 
-def fetch_countries_code_data(Request):
+def fetch_epl_players_data(Request):
     data = []
-    url = "https://api.sportmonks.com/v3/core/countries"
+    url = "https://api.sportmonks.com/v3/football/teams/seasons/21646?include=players.player"
     headers = {"Authorization": "ZsmqzVHh2cx0AcBaTlnKuV4Wh3XuYSlyYuh6yEDLULKpPa42fnbggIIubhNL", "Accept": "application/json"}
     pagination_key="pagination"
 
@@ -57,30 +58,45 @@ def fetch_countries_code_data(Request):
             break
 
     # Transform to pandas dataframe        
-    countries_code_data = pd.DataFrame(data)
+    data_df = pd.DataFrame(data)
 
+    # Create empty dataframe for holding players
+    all_players = pd.DataFrame()
+
+
+    # Loop through teams, extracting player data
+    for idx, row in data_df.iterrows():
+        if isinstance(row['players'], list):
+            for player_data in row['players']:
+                    # Normalize directly within the loop for each player data item
+                player_details = json_normalize(player_data['player'])
+                player_details['team_id'] = row['id']  # Assuming team 'id' should be linked with players
+
+                    # Concatenate the normalized player details
+                all_players = pd.concat([all_players, player_details], ignore_index=True)
+    
     # Selecting relevant columns to return
-    columns_of_interest = ['id', 'continent_id', 'name', 'official_name', 'iso2', 'iso3']
-    countries_code_data = countries_code_data[columns_of_interest].drop_duplicates().reset_index(drop=True)
+    columns_of_interest = ['id', 'team_id', 'common_name', 'firstname', 'lastname', 'display_name', 'date_of_birth', 'country_id']
+    all_players = all_players[columns_of_interest].drop_duplicates().reset_index(drop=True)
 
     # Capture as csv
-    #csv_countries_code_data = countries_code_data.to_csv(index=False)
-    csv_countries_code_data = countries_code_data.to_csv(index=False, quoting=csv.QUOTE_NONNUMERIC)
-    
+    csv_epl_players_data = all_players.to_csv(index=False)
+
     # Establish filename
-    filename = f'countries_code_data.csv'
+    filename = 'epl_players_data.csv'
 
     # Create a client for the Google Cloud Storage
     storage_client = storage.Client()
 
     # Get the bucket
-    bucket = storage_client.bucket('countries_code_data')
+    bucket = storage_client.bucket('epl_players_data')
 
     # Create a new blob (file) in the bucket
     blob = bucket.blob(filename)
 
     # Upload
-    blob.upload_from_string(csv_countries_code_data, content_type='text/csv')
+    blob.upload_from_string(csv_epl_players_data, content_type='text/csv')
     
-    return 'Countries code data CSV file written to bucket.'
+    return 'EPL players data CSV file written to bucket.'
+    
     
