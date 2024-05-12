@@ -35,7 +35,7 @@ their API source and code
     SportsMonk API source for English Premier League Players, including their 
     name, country of origin and date of birth. The data is then stored in the 
     ***epl_players_data*** bucket.
-    !["Bucket with CSV"](images/)   
+    !["Bucket with CSV"](images/epl_bucket.png)   
 4. **Cloud_Functions/fetch_f1_drivers_data.py**: This retrieves data from the 
     SportsMonk API source for F1 Drivers in current races also, including their 
     name, country of origin and date of birth. The data is then stored in the 
