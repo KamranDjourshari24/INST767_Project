@@ -187,8 +187,8 @@ For the last aspect of the Data Pipeline, we analyzed the data to answer of vari
 questions that related to F1 Racing/EPL with GDP information. Below are the questions with sample 
 screenshots of the answers to them
 
-- Which Countries are producing the most English Premier League talent and what are the respective countries'
-average GDP?
+- **Which Countries are producing the most English Premier League talent and what are the respective countries'
+average GDP?**
     
     !["Results"](images/epl_gdp_query.png)
 
@@ -198,7 +198,7 @@ average GDP?
     over 1 Trillion dollars GDP-wise which highlights a potential pattern/correlation in terms of 
     Premier League Players and GDP value.
 
--  On average, how many races are held each year for each circuit? 
+-  **On average, how many races are held each year for each circuit?** 
 
     !["Results"](images/avg_race_circuit_preview.png)
 
@@ -208,7 +208,7 @@ average GDP?
     consistency of race schedules across different circuits. From the results, we can see that most 
     circuits hold one race a year, but there are a few that average more.
 
-- What are the top 5 countries in which the maximum no. of f1 races took place?
+- **What are the top 5 countries in which the maximum no. of f1 races took place?**
 
     !["Results"](images/country_max_race_preview.png)
 
@@ -217,13 +217,13 @@ average GDP?
     amount of races. From the results, the countries Italy, Spain, England, Hungary and Bahrain 
     consisted of this top 5 respectively.
 
-- Which F1 racers have competed in races in their home countries?
+- **Which F1 racers have competed in races in their home countries?**
 
     !["Results"](images/f1_racers_at_home_preview.png)
 
     The query to address this question was from [**data_analysis/f1_racers_racing_at_home.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/f1_racers_racing_at_home.sql). From the results, we can see that 14 drivers raced in their home country. Drivers from Australia, China, England, France, Japan, Mexico, Netherlands, Spain and the United States.
 
-- What is the average age for EPL players from each country that sends players to the league?
+- **What is the average age for EPL players from each country that sends players to the league?**
 
     !["Results"](images/player_avg_age_preview.png)
 
@@ -234,7 +234,7 @@ average GDP?
     are around 27 years old with 222 players in the Premier League and French Players have an average 
     age of 26 in the Premier League with 35 players in the league.
 
-- What names are most common among F1 racers and EPL players?
+- **What names are most common among F1 racers and EPL players?**
 
     !["Results"](images/player_common_name_preview.png)
 
@@ -244,7 +244,7 @@ average GDP?
     It provides an interesting insight into the distribution of names among athletes in these two 
     sports with James, Ben, and Jack being the most popular.
 
-- Find the correlation between no. of players and the average GDP of the country. Is there any positive/negative relationship?
+- **Find the correlation between no. of players and the average GDP of the country. Is there any positive/negative relationship?**
 
     !["Results"](images/player_count_gdp_preview.png)
 
@@ -255,7 +255,7 @@ average GDP?
     this means that there isn't a strong connection between the number of players in a country and 
     its economic performance, as measured by GDP.
 
-- Populate country to-year matrix showing how many races happened in each country over the years.
+- **Populate country to-year matrix showing how many races happened in each country over the years.**
 
     !["Results"](images/year_country_count_preview.png)
 
