@@ -163,13 +163,20 @@ when conducting our analysis we could JOIN the tables together if needed.
 
 Here is a screenshot of the all the tables stored within the dataset, which appeared once the 
 DataProc Workflow, with various jobs, was officially completed. 
+
 !["Four Entities in BigQuery Dataset"](images/big_query_tables.png)
+
+Preview of the **epl_country Table**:
+!["Preview of f1_race Table"](images/epl_country_preview.png)
+
 
 Preview of the **f1_race Table**:
 !["Preview of f1_race Table"](images/f1_race_preview.png)
 
+
 Preview of the **gdp_country Table**:
 !["Preview of gdp_country Table"](images/gdp_country_preview.png)
+
 
 Preview of the **racerf1_country Table**:
 !["Preview of racerf1_country Table"](images/racerf1_preview.png)
@@ -182,11 +189,84 @@ screenshots of the answer to them
 
 - Which Countries are producing the most English Premier League talent and what is the respective countries
 average GDP?
+    
     !["Results"](images/epl_gdp_query.png)
-    The query to address this problem was from [**epl_countrycount_gdp.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/epl_countrycount_gdp.sql). From the results we can see the top country by far is England, which makes sense as the League, 
+
+    The query to address this problem was from [**data_analysis/epl_countrycount_gdp.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/epl_countrycount_gdp.sql). 
+    From the results we can see the top country by far is England, which makes sense as the League, 
     based in England, prioritizes English players. However, each of the top 3 nations all are worth
     over 1 Trillion dollas GDP-wise which highlights a potential pattern/correlation in terms of 
     Premier League Players and GDP value.
 
--  
+-  On average, how many races are held each year for each circuit? 
+
+    !["Results"](images/avg_race_circuit_preview.png)
+
+    This query, [**data_analysis/avg_races_per_year**](https://github.com/KamranDjourshari24/INST767_Project/tree/main/data_analysis) 
+    calculates the number of races held each year for each circuit, then calculates the average 
+    number of races per year across all years for each circuit. It provides insight into the 
+    consistency of race schedules across different circuits. From the results, we can see that most 
+    circuits hold one race a year, but there are a few that average more.
+
+- What are the top 5 countries in which maximum no. of f1 races took place?
+
+    !["Results"](images/country_max_race_preview.png)
+
+    This query, [**data_analysis/country_max_race**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/country_max_race.sql)  
+    displays the number of F1 races that took place in the five countries which hosted the most 
+    amount of races. From the results, the countries Italy, Spain, England, Hungary and Bahrain 
+    consisted of this top 5 respectively. 
+
+– Which F1 racers have competed in races in their home countries?
+
+    !["Results"](images/f1_racers_at_home_preview.png)
+
+    The query to address this question was from [**data_analysis/f1_racers_racing_at_home.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/f1_racers_racing_at_home.sql). 
+    From the results we can see that 14 drivers raced in their home country. 
+    Drivers from Australia, China, England, France, Japan, Mexico, Netherlands, Spain and the 
+    United States.
+
+– What is the average age for EPL players from each country that sends players to the league?
+
+    !["Results"](images/player_avg_age_preview.png)
+
+    The query to address this question was from [**data_analysis/player_avg_age.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/player_avg_age.sql). 
+    From the results we can see that the average age for most of the countries by player count that 
+    send players to the league is in the mid-to-late 20s. From the results, we can see that the two
+    most popular nationalities in the Premier League were England and France. English Players
+    are around 27 years old with 222 players in the Premier League and French Players have an average 
+    age of 26 in the Premier League with 35 players in the league.
+
+- What names are most common among F1 racers and EPL players?
+
+    !["Results"](images/player_common_name_preview.png)
+
+    This query, [**data_analysis/player_common_names.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/player_common_names.sql) 
+    combines the first names of F1 racers and EPL players using UNION ALL. Then, it counts the 
+    occurrences of each first name and retrieves the top 3 most common first names among them. 
+    It provides an interesting insight into the distribution of names among athletes in these two 
+    sports with James, Ben and Jack being the most popular.
+
+- Find the correlation between no. of players and the average gdp of the country. Is there any positive/negative relationship?
+
+    !["Results"](images/player_count_gdp_preview.png)
+
+    The query, [**data_analysis/player_count_gdp.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/player_count_gdp.sql)
+    correlation value based on output is +0.15, The positive sign indicates that as player count 
+    tends to increase, average GDP also tends to increase slightly. The value of 0.15 suggests that 
+    the relationship between player count and average GDP is quite weak. In practical terms, 
+    this means that there isn't a strong connection between the number of players in a country and 
+    its economic performance, as measured by GDP.
+
+- Populate country to year matrix showing how many races happened in each country over the years.
+
+    !["Results"](images/year_country_count_preview.png)
+
+    The query to address this problem was from [**data_analyis/year_country_count.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/year_country_count.sql). 
+    This table displays a matrix of race occurrences by country, showing the number of races held 
+    over the years. In most years, only one race occurred per country, but there are exceptions when 
+    two or three races took place in a single year in one country. For instance, in 2020, Italy 
+    hosted three races.
+
+
 
