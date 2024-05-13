@@ -217,16 +217,13 @@ average GDP?
     amount of races. From the results, the countries Italy, Spain, England, Hungary and Bahrain 
     consisted of this top 5 respectively.
 
-  - Which F1 racers have competed in races in their home countries?
+- Which F1 racers have competed in races in their home countries?
 
     !["Results"](images/f1_racers_at_home_preview.png)
 
-    The query to address this question was from [**data_analysis/f1_racers_racing_at_home.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/f1_racers_racing_at_home.sql). 
-    From the results, we can see that 14 drivers raced in their home country. 
-    Drivers from Australia, China, England, France, Japan, Mexico, Netherlands, Spain and the 
-    United States.
+    The query to address this question was from [**data_analysis/f1_racers_racing_at_home.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/f1_racers_racing_at_home.sql). From the results, we can see that 14 drivers raced in their home country. Drivers from Australia, China, England, France, Japan, Mexico, Netherlands, Spain and the United States.
 
-    – What is the average age for EPL players from each country that sends players to the league?
+– What is the average age for EPL players from each country that sends players to the league?
 
     !["Results"](images/player_avg_age_preview.png)
 
