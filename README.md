@@ -183,8 +183,10 @@ screenshots of the answer to them
 - Which Countries are producing the most English Premier League talent and what is the respective countries
 average GDP?
     !["Results"](images/epl_gdp_query.png)
-    The query to address this problem was from [**epl_countrycount_gdp.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/epl_countrycount_gdp.sql). From the results we can see the top country by far is England, which makes sense as the League prioritizes English players. However, each of the top 3 nations all are worth
-    over 1 Trillion dollas GDP-wise which highlights a potential pattern/correlation in terms of Premier League Players and GDP value.
+    The query to address this problem was from [**epl_countrycount_gdp.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/epl_countrycount_gdp.sql). From the results we can see the top country by far is England, which makes sense as the League, 
+    based in England, prioritizes English players. However, each of the top 3 nations all are worth
+    over 1 Trillion dollas GDP-wise which highlights a potential pattern/correlation in terms of 
+    Premier League Players and GDP value.
 
 -  
 
