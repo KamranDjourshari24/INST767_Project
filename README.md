@@ -69,14 +69,14 @@ assigned Functions:
     League Teams). 
     !["Scheduler Proof"](images/epl_call1.png)  
 
-    Bucket with new data (shown with Last Modied Time):
+    Bucket with new data (shown with Last modified Time):
     !["Bucket Update Proof"](images/epl_call_bucket.png)  
 
 - **f1_driver_call**: This scheduler is set to run before the start of every F1 Racing season at 
     12:20 AM UTC timezone on February 23rd with the new driver data. 
     !["Scheduler Proof"](images/f1_driver_call1.png)  
 
-    Bucket with new data (shown with Last Modied Time):
+    Bucket with new data (shown with Last modified Time):
     !["Bucket Update Proof"](images/f1_driver_call_bucket.png)
 
 - **gdp_call**: This scheduler is set to run every 6 months starting from January. The goal
@@ -84,7 +84,7 @@ assigned Functions:
     from the World Bank is somewhat unknown. 
     !["Scheduler Proof"](images/gdp_call1.png)  
 
-    Bucket with new data (shown with Last Modied Time):
+    Bucket with new data (shown with Last modified Time):
     !["Bucket Update Proof"](images/gdp_call_bucket.png)
 
 - **race_f1_call**: This scheduler is set to run yearly on February 2nd at 5:00 AM UTC Timezone. 
@@ -93,7 +93,7 @@ assigned Functions:
     yearly, we chose beginning of February just before the new season.  
     !["Scheduler Proof"](images/race_f1_call1.png)  
 
-    Bucket with new data (shown with Last Modied Time):
+    Bucket with new data (shown with Last modified Time):
     !["Bucket Update Proof"](images/race_f1_call_bucket.png)
 
 
@@ -145,7 +145,46 @@ In order to automate this process, we set a Cloud Scheduler which would call thi
 We set it to run Weekly on Monday at 5 AM UTC Timezone. As shown here: 
 !["Workflow Scheduler"](images/workflow_schedule1.png)
 
+Run Successfully:
+!["Workflow ID success"](images/workflow_schedule_success.png)
+
+
 Once triggered, it creates a temporary cluster, which executes these four jobs mentioned above, which can
 be shown as runned successfully here: 
-!["Workflow Scheduler"](images/jobs_success.png)
+!["Dataproc jobs success"](images/jobs_success.png)
+
+
+## Storage
+For the storage aspect, we relied on BigQuery. As mentioned in the previous step, each of the 
+Pyspark Jobs at the end of each program sent/wrote the DataFrames into BigQuery. From the project,
+we created one dataset, named ***finalproject*** and stored all four tables within. We chose these
+four unique entities as we viewed each as seperate categories with unique information. From there, 
+when conducting our analysis we could JOIN the tables together if needed. 
+
+Here is a screenshot of the all the tables stored within the dataset, which appeared once the 
+DataProc Workflow, with various jobs, was officially completed. 
+!["Four Entities in BigQuery Dataset"](images/big_query_tables.png)
+
+Preview of the **f1_race Table**:
+!["Preview of f1_race Table"](images/f1_race_preview.png)
+
+Preview of the **gdp_country Table**:
+!["Preview of gdp_country Table"](images/gdp_country_preview.png)
+
+Preview of the **racerf1_country Table**:
+!["Preview of racerf1_country Table"](images/racerf1_preview.png)
+
+
+## Analysis
+For the last aspect of the Data Pipeline, we analyzed the data to answer of variety of different 
+questions that related to F1 Racing/EPL with GDP information. Below are the questions with sample 
+screenshots of the answer to them
+
+- Which Countries are producing the most English Premier League talent and what is the respective countries
+average GDP?
+    !["Results"](images/epl_gdp_query.png)
+    The query to address this problem was from [**epl_countrycount_gdp.sql**](https://github.com/KamranDjourshari24/INST767_Project/blob/main/data_analysis/epl_countrycount_gdp.sql). From the results we can see the top country by far is England, which makes sense as the League prioritizes English players. However, each of the top 3 nations all are worth
+    over 1 Trillion dollas GDP-wise which highlights a potential pattern/correlation in terms of Premier League Players and GDP value.
+
+-  
 
