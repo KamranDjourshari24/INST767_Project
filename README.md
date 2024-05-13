@@ -67,14 +67,14 @@ assigned Functions:
 - **epl_call**: This scheduler is set to run the first of the month every September and February 
     at 12 AM UTC after the closing of Transfer Window (where players are bought and sold to Premier 
     League Teams). 
-    !["Scheduler Proof"](images/epl_call.png)  
+    !["Scheduler Proof"](images/epl_call1.png)  
 
     Bucket with new data (shown with Last Modied Time):
     !["Bucket Update Proof"](images/epl_call_bucket.png)  
 
 - **f1_driver_call**: This scheduler is set to run before the start of every F1 Racing season at 
     12:20 AM UTC timezone on February 23rd with the new driver data. 
-    !["Scheduler Proof"](images/f1_driver_call.png)  
+    !["Scheduler Proof"](images/f1_driver_call1.png)  
 
     Bucket with new data (shown with Last Modied Time):
     !["Bucket Update Proof"](images/f1_driver_call_bucket.png)
@@ -82,7 +82,7 @@ assigned Functions:
 - **gdp_call**: This scheduler is set to run every 6 months starting from January. The goal
     is to gather new GDP data for the year within this time period as the release of new GDP data
     from the World Bank is somewhat unknown. 
-    !["Scheduler Proof"](images/gdp_call.png)  
+    !["Scheduler Proof"](images/gdp_call1.png)  
 
     Bucket with new data (shown with Last Modied Time):
     !["Bucket Update Proof"](images/gdp_call_bucket.png)
@@ -91,7 +91,7 @@ assigned Functions:
     The goal of this is to gather the new year's schedule which always released sometime before 
     February (the starting month of the new F1 Season). As the new year schedule release data varies
     yearly, we chose beginning of February just before the new season.  
-    !["Scheduler Proof"](images/race_f1_call.png)  
+    !["Scheduler Proof"](images/race_f1_call1.png)  
 
     Bucket with new data (shown with Last Modied Time):
     !["Bucket Update Proof"](images/race_f1_call_bucket.png)
@@ -143,7 +143,7 @@ Here is the Pyspark File stored in a bucket being used:
 
 In order to automate this process, we set a Cloud Scheduler which would call this Dataproc WorkFlow. 
 We set it to run Weekly on Monday at 5 AM UTC Timezone. As shown here: 
-!["Workflow Scheduler"](images/workflow_schedule.png)
+!["Workflow Scheduler"](images/workflow_schedule1.png)
 
 Once triggered, it creates a temporary cluster, which executes these four jobs mentioned above, which can
 be shown as runned successfully here: 
