@@ -1,4 +1,4 @@
-##This query lists all EPL and F1 plays with the same birth country
+##This query lists all EPL and F1 players with the same birth country
 
 SELECT 
     Shared_Birth_Country,
